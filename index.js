@@ -181,7 +181,7 @@ function getComponentImportFromCode(resourcePath, content) {
         const pickLoader = require.resolve('./utils/pickFence.js');
         const fakemd = `${require.resolve('./utils/_fakemd')}?mdurl=${resourcePath}&_t=${Date.now()}`;
 
-        dyImport = `${require.resolve('@baidu/hulk-san-loader')}!${pickLoader}?url=${resourcePath}!${fakemd}`;
+        dyImport = `${require.resolve('hulk-san-loader')}!${pickLoader}?url=${resourcePath}!${fakemd}`;
     }
     return dyImport;
 }
