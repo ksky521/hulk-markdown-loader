@@ -103,7 +103,6 @@ module.exports = function(content) {
             const genComponentCode = genAppComponent.bind(this);
             const tCode = genComponentCode(templateContent, contentObj);
             let {rootContext = process.cwd(), resourcePath, resourceQuery, query} = this;
-
             sanLoader(
                 tCode,
                 {
@@ -155,8 +154,7 @@ function genAppComponent(template, {text, code, content}) {
 
     const textHtml = text ? compiler(text) : text;
     // 解决文档中的语法被解析的问题
-    let codeHtml = `<pre><code class="language-html">${code.replace(/</g, '&lt;')}</code></pre>`;
-
+    let codeHtml = `<pre><code class="language-html">${code.replace(/</g, '&lt;').replace(/`/g, '\\`')}</code></pre>`;
     const requirePath = getComponentImportFromCode(resourcePath, content);
 
     let id = 'components-demo-' + Date.now();
