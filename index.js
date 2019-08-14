@@ -159,7 +159,10 @@ function genAppComponent(template, {text, code, content}) {
     }
 
     // 解决文档中的语法被解析的问题
-    let codeHtml = `<pre><code class="language-html">${code.replace(/</g, '&lt;').replace(/`/g, '&#96;').replace('${', '&#36;&#123;')}</code></pre>`;
+    let codeHtml = `<pre><code class="language-html">${code
+        .replace(/</g, '&lt;')
+        .replace(/`/g, '&#96;')
+        .replace('${', '&#36;&#123;')}</code></pre>`;
     // let codeHtml = compiler('```html\n' + code + '\n```').replace(/`/g, '\\`');
 
     const requirePath = getComponentImportFromCode(resourcePath, content);
