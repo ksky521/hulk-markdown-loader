@@ -146,16 +146,21 @@ export default ${JSON.stringify(data).replace(/(['"])sanComponent\1/g, 'sanCompo
 function genAppComponent(template, {text, code, content}) {
     const {resourcePath} = this;
     // getsource
-    // 这里判断下是否是严格意义上的 san 组件
-    // 1. 存在 template tag，并且肯定不是一上来就闭合吧
-    if (!code || code.indexOf('</template>')) {
+    if (!code) {
         // 说明是纯 markdown
         return getMarkdownDefaultSanCode(compiler(content));
     }
-
     const textHtml = text ? compiler(text) : text;
+
+    // 这里判断下是否是严格意义上的 san 组件
+    // 1. 存在 template tag，并且肯定不是一上来就闭合吧
+    if (!~code.indexOf('</template>')) {
+        return getMarkdownDefaultSanCode(textHtml);
+    }
+
     // 解决文档中的语法被解析的问题
     let codeHtml = `<pre><code class="language-html">${code.replace(/</g, '&lt;').replace(/`/g, '\\`')}</code></pre>`;
+    // let codeHtml = compiler('```html\n' + code + '\n```').replace(/`/g, '\\`');
 
     const requirePath = getComponentImportFromCode(resourcePath, content);
 
