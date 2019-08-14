@@ -15,8 +15,7 @@ const getText = require('./utils/getText').getText;
 
 const EXPORT_TYPES = ['app', 'component', 'object', 'md', 'markdown'];
 
-function getMarkdownDefaultSanCode(content, cls) {
-    cls = cls || ['markdown'];
+function getMarkdownDefaultSanCode(content, cls = ['markdown']) {
     if (!Array.isArray(cls)) {
         cls = cls.split(/\s+/);
     }
@@ -147,7 +146,9 @@ export default ${JSON.stringify(data).replace(/(['"])sanComponent\1/g, 'sanCompo
 function genAppComponent(template, {text, code, content}) {
     const {resourcePath} = this;
     // getsource
-    if (!code) {
+    // 这里判断下是否是严格意义上的 san 组件
+    // 1. 存在 template tag，并且肯定不是一上来就闭合吧
+    if (!code || code.indexOf('</template>')) {
         // 说明是纯 markdown
         return getMarkdownDefaultSanCode(compiler(content));
     }
@@ -155,6 +156,7 @@ function genAppComponent(template, {text, code, content}) {
     const textHtml = text ? compiler(text) : text;
     // 解决文档中的语法被解析的问题
     let codeHtml = `<pre><code class="language-html">${code.replace(/</g, '&lt;').replace(/`/g, '\\`')}</code></pre>`;
+
     const requirePath = getComponentImportFromCode(resourcePath, content);
 
     let id = 'components-demo-' + Date.now();
