@@ -65,5 +65,7 @@ module.exports = (text, options = {}) => {
     }
 
     slugify.clear();
+    // 解决{{}}被 san 误当成变量解析的情况
+    html = html.replace('{{', '&#123;&#123;');
     return html;
 };
