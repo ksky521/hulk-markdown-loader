@@ -162,7 +162,7 @@ function genAppComponent(template, {text, code, content}) {
     let codeHtml = `<pre><code class="language-html">${code
         .replace(/</g, '&lt;')
         .replace(/`/g, '&#96;')
-        .replace('${', '&#36;&#123;')}</code></pre>`;
+        .replace(/\${/g, '&#36;&#123;')}</code></pre>`;
     // let codeHtml = compiler('```html\n' + code + '\n```').replace(/`/g, '\\`');
 
     const requirePath = getComponentImportFromCode(resourcePath, content);
