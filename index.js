@@ -13,7 +13,7 @@ const loaderUtils = require('loader-utils');
 const genTemplate = require('./utils/genTemplate');
 const getText = require('./utils/getText').getText;
 
-const EXPORT_TYPES = ['app', 'component', 'object', 'md', 'markdown'];
+const EXPORT_TYPES = ['app', 'html', 'component', 'object', 'md', 'markdown'];
 
 function getMarkdownDefaultSanCode(content, cls = ['markdown']) {
     if (!Array.isArray(cls)) {
@@ -81,6 +81,11 @@ module.exports = function(content) {
     }
     // console.log('\n', resourcePath, exportType);
     switch (exportType) {
+        case 'html':
+            const html = JSON.stringify(compiler(content))
+                .replace(/\u2028/g, '\\u2028')
+                .replace(/\u2029/g, '\\u2029');
+            return `export default ${html}`;
         case 'markdown':
         case 'md':
             const json = JSON.stringify(content)
