@@ -7,7 +7,7 @@
 ```js
 {
     test: /\.md$/,
-    use: ['hulk-san-loader', {loader: 'hulk-markdown-loader': options: {template: 'path.template'}}]
+    use: [{loader: 'hulk-markdown-loader': options: {template: 'path.template'}}]
 }
 ```
 
@@ -93,4 +93,3 @@ export default class Index extends Component {
 ```
 
 在这里`import Basic from './basic.md?exportType=component'`得到的是不再是一个完整的文档+预览内容，而是得到预览部分代码的的 San 组件，通过这种方式可以直接预览 Markdown 文档中的代码部分效果。**可以用于移动页面嵌入 iframe 预览效果**
-
