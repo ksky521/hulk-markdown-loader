@@ -93,3 +93,111 @@ export default class Index extends Component {
 ```
 
 在这里`import Basic from './basic.md?exportType=component'`得到的是不再是一个完整的文档+预览内容，而是得到预览部分代码的的 San 组件，通过这种方式可以直接预览 Markdown 文档中的代码部分效果。**可以用于移动页面嵌入 iframe 预览效果**
+
+## 如果组件使用了 ts 语法，需要完善相应 loader 配置
+
+假设有个`ts-comp.san`文件，script内容如下：
+
+```html
+<script lang="ts">
+import {Component} from 'san';
+
+const text: string = 'Hello TS!';
+
+export default class TsComp extends Component {
+    static template = `
+        <div>{{ text }}</div>
+    `;
+
+    initData() {
+        return {
+            text
+        };
+    }
+}
+</script>
+```
+
+那么 webpack 配置文件中需要包括：
+
+```js
+{
+    module: {
+        rules: [
+            {
+                test: /\.md/,
+                use: 'hulk-markdown-loader'
+            },
+            {
+                test: /\.san$/,
+                use: 'san-loader'
+            },
+            {
+                test: /\.ts$/,
+                exclude: /node_modules/,
+                use: {
+                    loader: 'babel-loader',
+                    options: {
+                        presets: [
+                            ...babelConfig.presets,
+                            ['@babel/preset-typescript', {
+                                allExtensions: true
+                            }]
+                        ],
+                        plugins: babelConfig.plugins
+                    }
+                }
+            },
+            {
+                test: /\.js$/,
+                exclude: /node_modules/,
+                use: {
+                    loader: 'babel-loader',
+                    options: babelConfig
+                }
+            },
+            {
+                test: /\.(css|less)$/,
+                oneOf: [
+                    // 这里匹配 `<style lang="less" module>`
+                    {
+                        resourceQuery: /module/,
+                        use: [
+                            'style-loader',
+                            {
+                                loader: 'css-loader',
+                                options: {
+                                    modules: {
+                                        localIdentName: '[local]_[hash:base64:5]'
+                                    },
+                                    localsConvention: 'camelCase'
+                                }
+                            },
+                            'less-loader'
+                        ]
+                    },
+                    // 这里匹配 `<style lang="less">`
+                    {
+                        use: [
+                            'style-loader',
+                            'css-loader',
+                            'less-loader'
+                        ]
+                    }
+                ]
+            }
+            {
+                test: /\.html$/,
+                use: [
+                    {
+                        loader: 'html-loader',
+                        options: {
+                            esModule: false
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+}
+```
